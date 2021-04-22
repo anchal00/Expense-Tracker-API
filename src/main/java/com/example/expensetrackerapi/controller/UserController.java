@@ -3,6 +3,10 @@ package com.example.expensetrackerapi.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +14,7 @@ import com.example.expensetrackerapi.constants.GlobalConstants;
 import com.example.expensetrackerapi.entity.UserEntity;
 import com.example.expensetrackerapi.service.UserService;
 
+import org.springframework.aop.framework.adapter.GlobalAdvisorAdapterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,10 +34,8 @@ public class UserController {
         String lastName = (String) userDetails.get("lastName");
         String email = (String) userDetails.get("email");
         String password = (String) userDetails.get("password");
-        userService.registerUser(firstName, lastName, email, password);
-        Map<String, String> map = new HashMap<>();
-
-        map.put("message", "registered successfully");
+        UserEntity user = userService.registerUser(firstName, lastName, email, password);
+        Map<String, String> map = generateJWT(user);
         return ResponseEntity.ok(map);
         
     }
@@ -42,11 +45,25 @@ public class UserController {
 
         String email = (String) userDetails.get("email");
         String password = (String) userDetails.get("password");
-        userService.validateUser(email, password);
-        Map<String, String> map  = new HashMap<>();
-        map.put("message", "logged-in successfully !");
+        UserEntity user = userService.validateUser(email, password);
+        Map<String, String> map  = generateJWT(user);
         return ResponseEntity.ok(map);
 
+    }
+
+    private  Map<String, String> generateJWT(UserEntity user) {
+        long timestamp = System.currentTimeMillis();
+        String token = Jwts.builder().signWith(SignatureAlgorithm.HS256 , GlobalConstants.API_SECRET_KEY)
+            .setIssuedAt(new Date(timestamp))
+            .setExpiration(new Date(timestamp + GlobalConstants.TOKEN_VALIDITY))
+            .claim("userId", user.getUserId())
+            .claim("email", user.getEmail())
+            .claim("firstName", user.getFirstName())
+            .claim("lastName", user.getLastName())
+            .compact();
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("token", token);
+        return tokenMap;
     }
     
 }
