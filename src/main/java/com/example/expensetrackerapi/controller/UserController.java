@@ -29,12 +29,24 @@ public class UserController {
         String lastName = (String) userDetails.get("lastName");
         String email = (String) userDetails.get("email");
         String password = (String) userDetails.get("password");
-        UserEntity user = userService.registerUser(firstName, lastName, email, password);
+        userService.registerUser(firstName, lastName, email, password);
         Map<String, String> map = new HashMap<>();
 
         map.put("message", "registered successfully");
         return ResponseEntity.ok(map);
         
+    }
+
+    @PostMapping(value = "/login")
+    public ResponseEntity<Map<String, String>> loginUser( @RequestBody Map<String, Object> userDetails) {
+
+        String email = (String) userDetails.get("email");
+        String password = (String) userDetails.get("password");
+        userService.validateUser(email, password);
+        Map<String, String> map  = new HashMap<>();
+        map.put("message", "logged-in successfully !");
+        return ResponseEntity.ok(map);
+
     }
     
 }

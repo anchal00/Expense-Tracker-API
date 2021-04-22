@@ -7,6 +7,7 @@ import com.example.expensetrackerapi.entity.UserEntity;
 import com.example.expensetrackerapi.exception.ExpTrackException;
 import com.example.expensetrackerapi.repository.UserRepository;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +37,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity validateUser(String email, String password) throws ExpTrackException {
 
-        return null;
+        UserEntity user = userRepository.findByEmailAndPassword(email, password);
+        if (!BCrypt.checkpw(password, user.getPassword())){
+            throw new ExpTrackException("Invalid email/password");
+        }
+        return user;
     }
 
     public boolean isEmailValid(String email) {

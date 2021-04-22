@@ -6,6 +6,8 @@ import java.sql.Statement;
 import com.example.expensetrackerapi.entity.UserEntity;
 import com.example.expensetrackerapi.exception.ExpTrackException;
 
+import org.apache.catalina.User;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -24,7 +26,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     private static final String FIND_BY_ID = "SELECT USER_ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD "
             + "FROM ETRACKER_USERS WHERE USER_ID = ?";
-            
+
+    private static final String FIND_BY_EMAIL_AND_PASSWORD = "SELECT USER_ID , FIRST_NAME , LAST_NAME , EMAIL, PASSWORD FROM ETRACKER_USERS WHERE EMAIL = ? ";
+    
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -32,6 +36,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Integer createUser(String firstName, String lastName, String email, String password)
             throws ExpTrackException {
         try {
+
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement prepStatement = connection.prepareStatement(CREATE_USER,
@@ -39,7 +44,7 @@ public class UserRepositoryImpl implements UserRepository {
                 prepStatement.setString(1, firstName);
                 prepStatement.setString(2, lastName);
                 prepStatement.setString(3, email);
-                prepStatement.setString(4, password);
+                prepStatement.setString(4, BCrypt.hashpw(password, BCrypt.gensalt(10)));
                 return prepStatement;
             }, keyHolder);
             return (Integer) keyHolder.getKeys().get("USER_ID");
@@ -51,7 +56,14 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public UserEntity findByEmailAndPassword(String email, String password) throws ExpTrackException {
-        return null;
+
+        try {
+            UserEntity user = jdbcTemplate.queryForObject(FIND_BY_EMAIL_AND_PASSWORD, new Object[] { email },
+                    userRowMapper);
+            return user;
+        } catch (Exception e) {
+            throw new ExpTrackException("Invalid email/password");
+        }
     }
 
     @Override
