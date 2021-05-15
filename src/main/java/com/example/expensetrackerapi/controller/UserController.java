@@ -1,11 +1,5 @@
 package com.example.expensetrackerapi.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,11 +8,15 @@ import com.example.expensetrackerapi.constants.GlobalConstants;
 import com.example.expensetrackerapi.entity.UserEntity;
 import com.example.expensetrackerapi.service.UserService;
 
-import org.springframework.aop.framework.adapter.GlobalAdvisorAdapterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @RestController
 @RequestMapping(GlobalConstants.API_ENDPOINT + GlobalConstants.USERS_PATH)

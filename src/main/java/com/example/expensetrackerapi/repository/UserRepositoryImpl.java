@@ -6,7 +6,6 @@ import java.sql.Statement;
 import com.example.expensetrackerapi.entity.UserEntity;
 import com.example.expensetrackerapi.exception.ExpTrackException;
 
-import org.apache.catalina.User;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
