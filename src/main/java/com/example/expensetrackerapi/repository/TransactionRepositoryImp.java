@@ -3,6 +3,7 @@ package com.example.expensetrackerapi.repository;
 import java.lang.Thread.State;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.expensetrackerapi.entity.Transaction;
@@ -22,26 +23,26 @@ public class TransactionRepositoryImp implements TransactionRepository {
     private static final String CREATE_SQL = "INSERT INTO ETRACKER_TRANSACTIONS (TRANSACTION_ID, CATEGORY_ID, USER_ID, AMOUNT, NOTE , TRANSACTION_DATE) VALUES(NEXTVAL('ETRACKER_TRANSACTIONS_SEQ'), ? , ?, ? ,? , ?)";
 
     private static final String FIND_BY_ID_SQL = "SELECT TRANSACTION_ID, CATEGORY_ID, USER_ID, AMOUNT, NOTE , TRANSACTION_DATE FROM ETRACKER_TRANSACTIONS WHERE USER_ID = ? AND CATEGORY_ID = ? AND TRANSACTION_ID = ? ";
+
+    private static final String FIND_ALL_SQL = "SELECT TRANSACTION_ID,CATEGORY_ID, USER_ID, AMOUNT,NOTE, TRANSACTION_DATE FROM ETRACKER_TRANSACTIONS WHERE USER_ID = ? AND CATEGORY_ID = ?";
+
+    private static final String UPDATE_SQL = "UPDATE ETRACKER_TRANSACTIONS SET AMOUNT = ? , NOTE = ?, TRANSACTION_DATE = ? WHERE USER_ID = ? AND CATEGORY_ID = ? AND TRANSACTION_ID = ? ";
+
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    private RowMapper<Transaction> transactionRowMapper = (( rs, rowNum ) -> {
-        Transaction transaction = new Transaction(rs.getInt("TRANSACTION_ID") , 
-            rs.getInt("CATEGORY_ID") ,
-            rs.getInt("USER_ID") ,
-            rs.getDouble("AMOUNT") ,
-            rs.getString("NOTE"), 
-            rs.getLong("TRANSACTION_DATE"));
+    private RowMapper<Transaction> transactionRowMapper = ((rs, rowNum) -> {
+        Transaction transaction = new Transaction(rs.getInt("TRANSACTION_ID"), rs.getInt("CATEGORY_ID"),
+                rs.getInt("USER_ID"), rs.getDouble("AMOUNT"), rs.getString("NOTE"), rs.getLong("TRANSACTION_DATE"));
 
         return transaction;
-        
 
-    } );
+    });
 
     @Override
     public List<Transaction> findAll(Integer userId, Integer CategoryId) {
 
-        return null;
+        return jdbcTemplate.query(FIND_ALL_SQL, new Object[] { userId, CategoryId }, transactionRowMapper);
     }
 
     @Override
@@ -49,7 +50,8 @@ public class TransactionRepositoryImp implements TransactionRepository {
             throws EtResourceNotFoundException {
 
         try {
-            return jdbcTemplate.queryForObject(FIND_BY_ID_SQL, new Object[] {userId, CategoryId, transactionId}, transactionRowMapper);
+            return jdbcTemplate.queryForObject(FIND_BY_ID_SQL, new Object[] { userId, CategoryId, transactionId },
+                    transactionRowMapper);
         } catch (Exception e) {
             throw new EtBadRequestException("Transaction not found ! ");
         }
@@ -84,9 +86,14 @@ public class TransactionRepositoryImp implements TransactionRepository {
     @Override
     public void update(Integer userId, Integer CategoryId, Integer transactionId, Transaction transaction)
             throws EtBadRequestException {
-        // TODO Auto-generated method stub
 
-    }
+            try {
+                jdbcTemplate.update(UPDATE_SQL, 
+                    new Object[]{transaction.getAmount(), transaction.getNote(), transaction.getTransactionDate(), userId, CategoryId, transactionId});
+            } catch (Exception e) {
+                throw new EtBadRequestException("Invalid Request");
+            }
+        }
 
     @Override
     public void removeById(Integer userId, Integer CategoryId, Integer transactionId)
