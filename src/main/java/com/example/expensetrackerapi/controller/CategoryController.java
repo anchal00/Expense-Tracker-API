@@ -14,6 +14,7 @@ import com.example.expensetrackerapi.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,6 +75,16 @@ public class CategoryController {
 
         Category category = categoryService.addCategory(userId, title, description);
         return new ResponseEntity<Category>(category, HttpStatus.CREATED);
+
+    }
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<Map<String, Boolean>> deleteCategory(HttpServletRequest req, HttpServletResponse rep,
+            @PathVariable("categoryId") Integer categoryId) {
+
+        int userId = (Integer) req.getAttribute("userId");
+       
+        categoryService.removeCategoryWithAllTransactions(userId, categoryId);
+        return new ResponseEntity<>(Map.of("Success", true), HttpStatus.OK);
 
     }
 }

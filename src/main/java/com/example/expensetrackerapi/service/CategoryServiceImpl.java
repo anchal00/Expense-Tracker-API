@@ -30,21 +30,23 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category addCategory(Integer userId, String title, String description) throws EtBadRequestException {
-        
-        Integer categoryId  = categoryRepository.create(userId, title, description);
+
+        Integer categoryId = categoryRepository.create(userId, title, description);
         return categoryRepository.findById(userId, categoryId);
     }
 
     @Override
     public void updateCatgory(Integer userId, Integer categoryId, Category category) throws EtBadRequestException {
-        
+
         categoryRepository.update(userId, categoryId, category);
     }
 
     @Override
     public void removeCategoryWithAllTransactions(Integer userId, Integer categoryId)
             throws EtResourceNotFoundException {
-        
+
+        fetchCategoryById(userId, categoryId); //if not cat. exits exception will be thrown
+        categoryRepository.removeById(userId, categoryId);
     }
-    
+
 }

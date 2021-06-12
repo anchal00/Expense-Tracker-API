@@ -28,6 +28,7 @@ public class TransactionRepositoryImp implements TransactionRepository {
 
     private static final String UPDATE_SQL = "UPDATE ETRACKER_TRANSACTIONS SET AMOUNT = ? , NOTE = ?, TRANSACTION_DATE = ? WHERE USER_ID = ? AND CATEGORY_ID = ? AND TRANSACTION_ID = ? ";
 
+    private static final String DELETE_BY_ID_SQL="DELETE FROM ETRACKER_TRANSACTIONS WHERE USER_ID = ? AND CATEGORY_ID = ? AND TRANSACTION_ID = ?";
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -98,8 +99,12 @@ public class TransactionRepositoryImp implements TransactionRepository {
     @Override
     public void removeById(Integer userId, Integer CategoryId, Integer transactionId)
             throws EtResourceNotFoundException {
-        // TODO Auto-generated method stub
 
+        int countOfRowsDeleted = jdbcTemplate.update(DELETE_BY_ID_SQL, new Object[]{userId, CategoryId, transactionId});
+        
+        if (countOfRowsDeleted == 0 ) {
+            throw new EtResourceNotFoundException("Transaction doesn't exit");
+        }
     }
 
 }

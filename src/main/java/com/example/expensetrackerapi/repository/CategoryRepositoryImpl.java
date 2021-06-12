@@ -43,6 +43,10 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     private static final String GET_CATEGORY_COUNT_SQL = "SELECT COUNT(*) FROM ETRACKER_CATEGORIES WHERE TITLE = ";
 
+    private static final String DELETE_CATEGORY_SQL = "DELETE FROM ETRACKER_CATEGORIES WHERE USER_ID = ? AND CATEGORY_ID = ?";
+    
+    private static final String DELETE_ALL_CATEGORY_TRANSACTIONS_SQL = "DELETE FROM ETRACKER_TRANSACTIONS WHERE CATEGORY_ID = ?";
+
     @Override
     public List<Category> findAll(Integer userId) throws EtResourceNotFoundException {
 
@@ -103,9 +107,15 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         });
     }
 
+    private void deleteAllTransactionsForCategory(Integer categoryId) {
+        jdbcTemplate.update(DELETE_ALL_CATEGORY_TRANSACTIONS_SQL, new Object[]{categoryId});
+    }
+
     @Override
     public void removeById(Integer userId, Integer categoryId) {
 
+        deleteAllTransactionsForCategory(categoryId);
+        jdbcTemplate.update(DELETE_CATEGORY_SQL, new Object[]{userId, categoryId});
     }
 
     private RowMapper<Category> categoryRowMapper = ( (rs, rowNum) -> {

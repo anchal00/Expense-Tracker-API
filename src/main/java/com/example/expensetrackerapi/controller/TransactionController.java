@@ -12,6 +12,7 @@ import com.example.expensetrackerapi.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,19 +35,18 @@ public class TransactionController {
         Integer userId = (Integer) request.getAttribute("userId");
 
         List<Transaction> transactions = transactionService.fetchAllTransactions(userId, categoryId);
-        
+
         return new ResponseEntity<List<Transaction>>(transactions, HttpStatus.OK);
     }
 
     @GetMapping("{transactionId}")
     public ResponseEntity<Transaction> getTransactionById(HttpServletRequest request,
-            @PathVariable("categoryId") Integer categoryId , 
-            @PathVariable("transactionId") Integer transactionId) {
+            @PathVariable("categoryId") Integer categoryId, @PathVariable("transactionId") Integer transactionId) {
 
         Integer userId = (Integer) request.getAttribute("userId");
 
         Transaction transaction = transactionService.fetchTransactionById(userId, categoryId, transactionId);
-        
+
         return new ResponseEntity<Transaction>(transaction, HttpStatus.OK);
     }
 
@@ -67,15 +67,25 @@ public class TransactionController {
 
     @PutMapping("{transactionId}")
     public ResponseEntity<Map<String, Boolean>> updateTransaction(HttpServletRequest request,
-            @PathVariable("categoryId") Integer categoryId , 
-            @PathVariable("transactionId") Integer transactionId, 
-            @RequestBody Transaction transaction ) {
+            @PathVariable("categoryId") Integer categoryId, @PathVariable("transactionId") Integer transactionId,
+            @RequestBody Transaction transaction) {
 
         Integer userId = (Integer) request.getAttribute("userId");
 
-        transactionService.updateTransaction(userId, categoryId, transactionId , transaction);
-        
-        return new ResponseEntity<>(Map.of("success",true), HttpStatus.OK);
+        transactionService.updateTransaction(userId, categoryId, transactionId, transaction);
+
+        return new ResponseEntity<>(Map.of("success", true), HttpStatus.OK);
+    }
+
+    @DeleteMapping("{transactionId}")
+    public ResponseEntity<Map<String, Boolean>> deleteTransaction(HttpServletRequest request,
+            @PathVariable("categoryId") Integer categoryId, @PathVariable("transactionId") Integer transactionId) {
+
+        Integer userId = (Integer) request.getAttribute("userId");
+
+        transactionService.removeTransactionById(userId, categoryId, transactionId);
+
+        return new ResponseEntity<>(Map.of("Success", true), HttpStatus.OK);
     }
 
 }
