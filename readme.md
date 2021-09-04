@@ -12,8 +12,8 @@ It supports features like total expense record for each categories and searching
 
 **Setup and Installation**
 
-1. Clone the repo from GitHub
-    git clone git@github.com:anchal00/Expense-Tracker-API.git
+1. Clone the repo from GitHub:
+    **git clone git@github.com:anchal00/Expense-Tracker-API.git**
 2. cd expense-tracker-api
 3. Make sure you have PostgreSQL installed on your system.
 4. Create database schema
