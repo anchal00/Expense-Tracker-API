@@ -27,3 +27,5 @@ It supports features like total expense record for each categories and searching
 5. Run the spring boot application
 ./mvnw spring-boot:run
 6. The server will run on port 8080 and hence all enpoints can be accessed starting from http://localhost:8080
+
+
