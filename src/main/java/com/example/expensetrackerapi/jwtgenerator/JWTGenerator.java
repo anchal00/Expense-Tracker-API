@@ -14,9 +14,7 @@ public final class JWTGenerator {
 
     private static JWTGenerator jwtGenerator;
 
-    private JWTGenerator() {
-        jwtGenerator = new JWTGenerator();
-    }
+    private JWTGenerator() {}
 
     public static JWTGenerator getJWTGenerator() {
         if (jwtGenerator == null) {
