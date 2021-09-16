@@ -23,6 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(GlobalConstants.API_ENDPOINT + "/categories/{categoryId}/transactions")
+/**
+ * A REST controller for managing transactions for a expense category
+ * 
+ */
 public class TransactionController {
 
     @Autowired

@@ -25,6 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(GlobalConstants.API_ENDPOINT + "/categories")
+
+/**
+ * A REST Controller to perform operations on Expense Categories
+ * 
+ */
 public class CategoryController {
 
     @Autowired
@@ -45,14 +50,14 @@ public class CategoryController {
             @RequestBody Category category) {
 
         Integer userId = (Integer) req.getAttribute("userId");
-        
+
         categoryService.updateCatgory(userId, categoryId, category);
 
         Map<String, Boolean> map = new HashMap<>();
         map.put("success", true);
 
         return new ResponseEntity<>(map, HttpStatus.OK);
-        
+
     }
 
     @GetMapping(value = "/{categoryId}")
@@ -77,12 +82,13 @@ public class CategoryController {
         return new ResponseEntity<Category>(category, HttpStatus.CREATED);
 
     }
+
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Map<String, Boolean>> deleteCategory(HttpServletRequest req, HttpServletResponse rep,
             @PathVariable("categoryId") Integer categoryId) {
 
         int userId = (Integer) req.getAttribute("userId");
-       
+
         categoryService.removeCategoryWithAllTransactions(userId, categoryId);
         return new ResponseEntity<>(Map.of("Success", true), HttpStatus.OK);
 
