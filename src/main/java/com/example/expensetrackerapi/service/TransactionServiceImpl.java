@@ -1,5 +1,6 @@
 package com.example.expensetrackerapi.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.expensetrackerapi.entity.Transaction;
@@ -33,7 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction addTransaction(Integer userId, Integer categoryId, Double amount, String note,
-            Long transactionDate) throws EtBadRequestException {
+            LocalDateTime transactionDate) throws EtBadRequestException {
                 
         Integer id = transactionRepository.create(userId, categoryId, amount, note, transactionDate);
 

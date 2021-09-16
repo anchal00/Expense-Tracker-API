@@ -1,5 +1,6 @@
 package com.example.expensetrackerapi.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.expensetrackerapi.entity.Transaction;
@@ -12,7 +13,7 @@ public interface TransactionRepository {
 
     Transaction findById(Integer userId, Integer CategoryId, Integer transactionId) throws EtResourceNotFoundException;
 
-    Integer create(Integer userId, Integer CategoryId, Double amount, String note, Long transactionDate)
+    Integer create(Integer userId, Integer CategoryId, Double amount, String note, LocalDateTime transactionDate)
             throws EtBadRequestException;
 
     void update(Integer userId, Integer CategoryId, Integer transactionId, Transaction transaction)

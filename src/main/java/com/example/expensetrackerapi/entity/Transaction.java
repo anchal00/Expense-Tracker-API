@@ -1,5 +1,7 @@
 package com.example.expensetrackerapi.entity;
 
+import java.sql.Timestamp;
+
 public class Transaction {
 
     private Integer transactionId;
@@ -8,13 +10,13 @@ public class Transaction {
 
     private Double amount;
     private String note;
-    private Long transactionDate;
+    private Timestamp transactionDate;
 
     public Transaction() {
     }
 
     public Transaction(Integer transactionId, Integer userId, Integer categoryId, Double amount, String note,
-            Long transactionDate) {
+            Timestamp transactionDate) {
         this.transactionId = transactionId;
         this.userId = userId;
         this.categoryId = categoryId;
@@ -63,11 +65,11 @@ public class Transaction {
         this.note = note;
     }
 
-    public Long getTransactionDate() {
+    public Timestamp getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(Long transactionDate) {
+    public void setTransactionDate(Timestamp transactionDate) {
         this.transactionDate = transactionDate;
     }
 

@@ -1,5 +1,7 @@
 package com.example.expensetrackerapi.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +63,10 @@ public class TransactionController {
         Integer userId = (Integer) req.getAttribute("userId");
         Double amount = Double.valueOf(transactionMap.get("amount").toString());
         String note = (String) transactionMap.get("note");
-        Long transactionDate = (Long) transactionMap.get("transactionDate");
+        String date = (String) transactionMap.get("transactionDate");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime transactionDate = LocalDateTime.parse(date, formatter);
 
         Transaction transaction = transactionService.addTransaction(userId, categoryId, amount, note, transactionDate);
 
