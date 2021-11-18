@@ -26,7 +26,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String FIND_BY_ID = "SELECT USER_ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD "
             + "FROM ETRACKER_USERS WHERE USER_ID = ?";
 
-    private static final String FIND_BY_EMAIL_AND_PASSWORD = "SELECT USER_ID , FIRST_NAME , LAST_NAME , EMAIL, PASSWORD FROM ETRACKER_USERS WHERE EMAIL = ? ";
+    private static final String FIND_BY_EMAIL = "SELECT USER_ID , FIRST_NAME , LAST_NAME , EMAIL, PASSWORD FROM ETRACKER_USERS WHERE EMAIL = ? ";
     
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -54,10 +54,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public UserEntity findByEmailAndPassword(String email, String password) throws ExpTrackException {
+    public UserEntity findByEmail(String email) throws ExpTrackException {
 
         try {
-            UserEntity user = jdbcTemplate.queryForObject(FIND_BY_EMAIL_AND_PASSWORD, new Object[] { email },
+            UserEntity user = jdbcTemplate.queryForObject(FIND_BY_EMAIL, new Object[] { email },
                     userRowMapper);
             return user;
         } catch (Exception e) {

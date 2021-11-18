@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity validateUser(String email, String password) throws ExpTrackException {
 
-        UserEntity user = userRepository.findByEmailAndPassword(email, password);
+        UserEntity user = userRepository.findByEmail(email);
         if (!BCrypt.checkpw(password, user.getPassword())){
             throw new ExpTrackException("Invalid email/password");
         }
